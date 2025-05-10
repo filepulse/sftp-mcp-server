@@ -25,7 +25,7 @@ Supported features
 ## 📚 Documentation
 
 👉 Full documentation is available at:  
-**[https://your-documentation-url.com](https://your-documentation-url.com)**
+**[Setup guide](https://www.filepulse.io/post/sftp-mcp-guide-how-to)**
 
 The documentation covers the setup and integration in Claude desktop.
 

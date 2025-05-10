@@ -33,4 +33,4 @@ ENV PATH="/app/.venv/bin:$PATH"
 
 RUN ls
 
-ENTRYPOINT ["python", "main.py"]
+ENTRYPOINT ["python", "server.py"]
