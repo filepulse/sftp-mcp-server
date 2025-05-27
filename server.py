@@ -15,22 +15,35 @@ class SftpClient:
 
     def _setup_connection(self):
         ssh = paramiko.SSHClient()
-        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+
+
 
         try:
-            ssh.connect(
-                hostname=os.environ["SFTP_HOST"],
-                username=os.environ["SFTP_USERNAME"],
-                password=os.environ["SFTP_PASSWORD"],
-            )
+            ssh.load_system_host_keys()
+            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) 
+
+            credentials = {
+                "hostname": os.environ["SFTP_HOST"],
+                "username": os.environ["SFTP_USERNAME"]
+            }
+
+            if os.environ.get("SSH_KEY_PATH"):
+                private_key = paramiko.RSAKey.from_private_key_file(os.environ["SSH_KEY_PATH"])
+                credentials["pkey"] = private_key
+            else:
+                credentials["password"] = os.environ["SFTP_PASSWORD"]
+
+            ssh.connect(**credentials)
 
             sftp = ssh.open_sftp()
 
             self._sftp = sftp
 
         except KeyError as e:
+            raise e            
             raise ValueError(f"Missing environment variable: {e}")
         except Exception as e:
+            raise e
             raise ValueError(f"Connection error: {e}")
 
     def connected(self):
@@ -63,6 +76,8 @@ class SftpClient:
         fo = self._sftp.file(path, "wb")
         fo.write(content.encode())
         fo.close()
+
+
 
 
 @asynccontextmanager
